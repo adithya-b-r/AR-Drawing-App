@@ -6,31 +6,29 @@ A sleek, mobile-first web application that overlays your digital sketches onto a
 
 ![AR Drawing App Interface Demo](/assets/demo_mockup.png)
 
-## Features
-- **Live Camera Underlay**: Uses the device's camera to display the real world.
-- **Image Overlays**: Upload multiple sketches and drag them into perfect position.
-- **Individual Controls**: Select an image to independently adjust its scaling, rotation, and opacity.
-- **Grayscale Filter**: Instantly convert noisy image backgrounds to B&W for easier tracing.
-- **Flashlight & Camera Toggles**: Easily switch between front and rear cameras, and toggle the device torch (if supported).
-- **Drag & Drop**: Seamlessly import images on desktop or tablet.
+## ✨ Key Features
+- **Live AR Tracking**: Stream your device's camera as a real-time underlay.
+- **Perspective Distortion (Warp) Setup**: Use a 4-corner perspective warp grid to flawlessly match your sketch's projection to your desk angle.
+- **Pinch-to-Zoom & Rotate**: Seamless native touch gestures to quickly scale and position your stencils.
+- **Image Cropping Sub-tool**: Intuitively crop uploaded guides right inside the browser before placing them.
+- **Individual Controls**: Select an image to independently adjust its scale, rotation, and opacity manually.
+- **Grayscale Filter**: Instantly convert noisy colored image backgrounds to B&W for easier tracing.
+- **Flashlight & Lens Control**: Easily switch between front and rear cameras, and toggle the device torch (if supported).
+- **Auto-Save Workspaces**: Your entire canvas layout and uploaded sketches are saved to `localStorage` so you never lose your progress!
+- **Dark/Light Theme**: A gorgeous, glassmorphic UI that responds dynamically to both dark and light modes.
+- **Developer About Modal**: An integrated custom modal honoring the repository creator with quick links.
 
-## Tech Stack
+## 🛠️ Tech Stack
 Built with modern web technologies for a premium experience:
 - **Framework**: Next.js 15 (React 19)
 - **Styling**: Tailwind CSS v4
+- **Image Manipulation**: `react-image-crop` & `perspective-transform`
+- **Gestures**: `@use-gesture/react`
 - **Icons**: Lucide React
 - **API**: `navigator.mediaDevices` for web camera access
 
-## Future Enhancements 🚀
-If you want to take this app further, here are some great ideas to implement next:
-1. **Pinch-to-Zoom & Rotate**: Add native touch gesture recognition so users can scale and rotate images by pinching and twisting with two fingers on their touchscreen.
-2. **Local Storage Save State**: Automatically save the canvas state (uploaded images, their positions, and active settings) to `localStorage` so users don't lose their work if they accidentally refresh the page.
-3. **Perspective Distortion Grid**: Allow users to warp the corners of an overlay image independently to match perspective distortions when a piece of paper isn't perfectly flat or head-on.
-4. **Export Merged Canvas**: Add a "Snapshot" feature that captures the current camera frame and burns the overlays into a single downloadable image.
-5. **Image Cropping Sub-tool**: Allow users to crop out extraneous margins of their uploaded sketches natively in the app before tracing.
-6. **Dark/Light Theme Toggle**: Currently defaulting to a sleek dark UI, building a specific high-contrast light theme could help in bright environments.
+## 🚀 Getting Started
 
-## Getting Started
 First, clone the repo and install dependencies:
 ```bash
 npm install
@@ -41,4 +39,13 @@ Then run the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to launch the AR studio!
+
+<br />
+
+---
+<div align="center">
+  <img src="/assets/about_modal.png" alt="Developer About Modal" width="400"/>
+  <br/>
+  <i>Created by Adithya B.R. - Don't forget to ⭐️ this repo!</i>
+</div>
