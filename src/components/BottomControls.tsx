@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette } from "lucide-react";
+import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal } from "lucide-react";
 
 import { UploadedImage } from "@/app/page";
 
@@ -15,7 +15,7 @@ interface BottomControlsProps {
   onImageUpload: (files: FileList) => void;
 }
 
-type ActivePanel = "opacity" | "scale" | "rotate" | null;
+type ActivePanel = "opacity" | "scale" | "rotate" | "more" | null;
 
 export default function BottomControls({
   activeImage,
@@ -110,72 +110,79 @@ export default function BottomControls({
               />
             </div>
           )}
+          {activePanel === "more" && (
+            <div className="flex gap-4 justify-center py-2">
+              <ControlButton
+                icon={<RotateCw size={22} />}
+                label="Rotate"
+                onClick={() => togglePanel("rotate")}
+              />
+
+              <ControlButton
+                icon={<Palette size={22} />}
+                label="B&W"
+                isActive={activeImage ? activeImage.grayscale : false}
+                onClick={() => activeImage && onUpdateImage(activeImage.id, { grayscale: !activeImage.grayscale })}
+              />
+
+              <div className="w-[1px] h-12 bg-white/20 mx-2"></div>
+
+              <ControlButton
+                icon={<Camera size={22} />}
+                label="Lens"
+                onClick={() => setFacingMode(facingMode === "environment" ? "user" : "environment")}
+              />
+
+              <ControlButton
+                icon={<Flashlight size={22} />}
+                label="Flash"
+                isActive={flashlightOn}
+                onClick={() => setFlashlightOn(!flashlightOn)}
+              />
+            </div>
+          )}
         </div>
       )}
 
-      {/* Main Control Pill - Make it horizontally scrollable on smallest screens if needed */}
-      <div className="w-full max-w-full overflow-x-auto no-scrollbar mask-edges">
-        <div className="flex gap-2 w-max mx-auto bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl rounded-full p-2 items-center shadow-lg border border-white/20 dark:border-white/10">
+      {/* Main Control Pill - Keep it at exactly 5 items for a clean default view */}
+      <div className="w-full bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl rounded-full p-2 flex justify-between items-center shadow-lg border border-white/20 dark:border-white/10 overflow-hidden">
 
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+        />
 
-          <ControlButton
-            icon={<ImagePlus size={22} />}
-            label="Gallery"
-            onClick={() => fileInputRef.current?.click()}
-          />
+        <ControlButton
+          icon={<ImagePlus size={22} />}
+          label="Gallery"
+          onClick={() => fileInputRef.current?.click()}
+        />
 
-          <ControlButton
-            icon={<SlidersHorizontal size={22} />}
-            label="Opacity"
-            isActive={activePanel === "opacity"}
-            onClick={() => togglePanel("opacity")}
-          />
+        <ControlButton
+          icon={<SlidersHorizontal size={22} />}
+          label="Opacity"
+          isActive={activePanel === "opacity"}
+          onClick={() => togglePanel("opacity")}
+        />
 
-          <ControlButton
-            icon={<Maximize size={22} />}
-            label="Scaling"
-            isActive={activePanel === "scale"}
-            onClick={() => togglePanel("scale")}
-          />
+        <ControlButton
+          icon={<Maximize size={22} />}
+          label="Scaling"
+          isActive={activePanel === "scale"}
+          onClick={() => togglePanel("scale")}
+        />
 
-          <ControlButton
-            icon={<RotateCw size={22} />}
-            label="Rotate"
-            isActive={activePanel === "rotate"}
-            onClick={() => togglePanel("rotate")}
-          />
+        <ControlButton
+          icon={<MoreHorizontal size={22} />}
+          label="More"
+          isActive={activePanel === "more" || activePanel === "rotate"}
+          onClick={() => togglePanel("more")}
+        />
 
-          <ControlButton
-            icon={<Palette size={22} />}
-            label="B&W"
-            isActive={activeImage ? activeImage.grayscale : false}
-            onClick={() => activeImage && onUpdateImage(activeImage.id, { grayscale: !activeImage.grayscale })}
-          />
-
-          <div className="w-[1px] h-8 bg-black/10 dark:bg-white/10 mx-1"></div>
-
-          <ControlButton
-            icon={<Camera size={22} />}
-            label="Lens"
-            onClick={() => setFacingMode(facingMode === "environment" ? "user" : "environment")}
-          />
-
-          <ControlButton
-            icon={<Flashlight size={22} />}
-            label="Flash"
-            isActive={flashlightOn}
-            onClick={() => setFlashlightOn(!flashlightOn)}
-          />
-
-        </div>
       </div>
     </div>
   );
