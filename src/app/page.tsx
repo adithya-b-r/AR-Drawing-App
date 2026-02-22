@@ -6,7 +6,7 @@ import ImageOverlay from "@/components/ImageOverlay";
 import BottomControls from "@/components/BottomControls";
 
 export default function Home() {
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [opacity, setOpacity] = useState(0.5);
   const [scale, setScale] = useState(1.0);
   const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
@@ -17,16 +17,16 @@ export default function Home() {
       {/* Background Camera Feed */}
       <CameraFeed facingMode={facingMode} flashlightOn={flashlightOn} />
 
-      {/* Overlay Image */}
-      {uploadedImage && (
-        <ImageOverlay imageUrl={uploadedImage} opacity={opacity} scale={scale} />
-      )}
+      {/* Overlay Images */}
+      {uploadedImages.map((url, i) => (
+        <ImageOverlay key={url + i} imageUrl={url} opacity={opacity} scale={scale} />
+      ))}
 
-      {/* Intro/Upload overlay when no image */}
-      {!uploadedImage && (
+      {/* Intro/Upload overlay when no images */}
+      {uploadedImages.length === 0 && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
           <h1 className="text-3xl font-bold text-white mb-4 drop-shadow-md">AR Drawing</h1>
-          <p className="text-white drop-shadow-md">Upload a sketch to begin</p>
+          <p className="text-white drop-shadow-md">Upload sketch(es) to begin</p>
         </div>
       )}
 
@@ -40,9 +40,9 @@ export default function Home() {
         setFacingMode={setFacingMode}
         flashlightOn={flashlightOn}
         setFlashlightOn={setFlashlightOn}
-        onImageUpload={(file) => {
-          const url = URL.createObjectURL(file);
-          setUploadedImage(url);
+        onImageUpload={(files: FileList) => {
+          const newUrls = Array.from(files).map(f => URL.createObjectURL(f));
+          setUploadedImages(prev => [...prev, ...newUrls]);
         }}
       />
     </main>

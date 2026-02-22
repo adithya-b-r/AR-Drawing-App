@@ -12,7 +12,7 @@ interface BottomControlsProps {
   setFacingMode: (val: "environment" | "user") => void;
   flashlightOn: boolean;
   setFlashlightOn: (val: boolean) => void;
-  onImageUpload: (file: File) => void;
+  onImageUpload: (files: FileList) => void;
 }
 
 type ActivePanel = "opacity" | "scale" | null;
@@ -37,8 +37,10 @@ export default function BottomControls({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      onImageUpload(e.target.files[0]);
+      onImageUpload(e.target.files);
     }
+    // reset input so the same files can be selected again if needed
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -92,6 +94,7 @@ export default function BottomControls({
         <input
           type="file"
           accept="image/*"
+          multiple
           className="hidden"
           ref={fileInputRef}
           onChange={handleFileChange}
@@ -151,8 +154,8 @@ function ControlButton({
     <button
       onClick={onClick}
       className={`flex flex-col items-center justify-center gap-1.5 w-16 h-16 rounded-full transition-all duration-200 active:scale-95 ${isActive
-          ? "bg-black text-white dark:bg-white dark:text-black"
-          : "text-zinc-600 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5"
+        ? "bg-black text-white dark:bg-white dark:text-black"
+        : "text-zinc-600 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5"
         }`}
     >
       <div className={`${isActive ? "" : "text-black dark:text-white"}`}>
