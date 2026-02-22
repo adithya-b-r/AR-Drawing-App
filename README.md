@@ -1,6 +1,10 @@
 # AR Drawing App 🎨
 
+![AR Drawing App Hero Image](/assets/hero_mockup.png)
+
 A sleek, mobile-first web application that overlays your digital sketches onto a live camera feed using Augmented Reality principles. Tracing and practicing your drawing skills has never been easier!
+
+![AR Drawing App Interface Demo](/assets/demo_mockup.png)
 
 ## Features
 - **Live Camera Underlay**: Uses the device's camera to display the real world.
