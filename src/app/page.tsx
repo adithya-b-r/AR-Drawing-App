@@ -106,17 +106,30 @@ export default function Home() {
   };
 
   const handleCropComplete = (croppedDataUrl: string) => {
-    const newImage: UploadedImage = {
-      id: Math.random().toString(36).substring(2, 9),
-      url: croppedDataUrl,
-      opacity: 0.5,
-      scale: 1.0,
-      rotation: 0,
-      grayscale: false,
-    };
+    const img = new window.Image();
+    img.onload = () => {
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+      const maxW = screenW * 0.8;
+      const maxH = screenH * 0.7;
 
-    setUploadedImages((prev) => [...prev, newImage]);
-    setActiveImageId(newImage.id);
+      let initialScale = 1.0;
+      if (img.width > maxW || img.height > maxH) {
+        initialScale = Math.min(maxW / img.width, maxH / img.height);
+      }
+
+      const newImage: UploadedImage = {
+        id: Math.random().toString(36).substring(2, 9),
+        url: croppedDataUrl,
+        opacity: 0.5,
+        scale: initialScale,
+        rotation: 0,
+        grayscale: false,
+      };
+      setUploadedImages((prev) => [...prev, newImage]);
+      setActiveImageId(newImage.id);
+    };
+    img.src = croppedDataUrl;
 
     if (currentCropUrl && currentCropUrl.startsWith("blob:")) {
       URL.revokeObjectURL(currentCropUrl);

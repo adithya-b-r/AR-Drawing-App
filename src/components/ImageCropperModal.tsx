@@ -21,8 +21,11 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
     const canvas = document.createElement("canvas");
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+
+    // Set actual output size to match original image resolution for the cropped area
+    canvas.width = crop.width * scaleX;
+    canvas.height = crop.height * scaleY;
+
     const ctx = canvas.getContext("2d");
 
     if (!ctx) return imageUrl;
@@ -35,8 +38,8 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
       crop.height * scaleY,
       0,
       0,
-      crop.width,
-      crop.height
+      canvas.width,
+      canvas.height
     );
 
     return canvas.toDataURL("image/png");
@@ -53,17 +56,17 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
 
   const handleSkip = () => {
     if (imgRef.current) {
-      const fullSizeUrl = getCroppedImg(imgRef.current, {
-        unit: 'px',
-        width: imgRef.current.naturalWidth,
-        height: imgRef.current.naturalHeight,
-        x: 0,
-        y: 0
-      });
-      onCropComplete(fullSizeUrl);
-    } else {
-      onCropComplete(imageUrl);
+      const canvas = document.createElement("canvas");
+      canvas.width = imgRef.current.naturalWidth;
+      canvas.height = imgRef.current.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(imgRef.current, 0, 0);
+        onCropComplete(canvas.toDataURL("image/png"));
+        return;
+      }
     }
+    onCropComplete(imageUrl);
   };
 
   return (
