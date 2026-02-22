@@ -43,7 +43,7 @@ export default function ImageOverlay({ image, isActive, onSelect }: ImageOverlay
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden pointer-events-none">
       <div
-        className={`relative pointer-events-auto touch-none ${isActive ? 'ring-2 ring-blue-500 rounded-lg ring-offset-2 ring-offset-transparent' : ''}`}
+        className={`relative pointer-events-auto touch-none animate-in zoom-in-75 fade-in duration-300 ease-out ${isActive ? 'ring-2 ring-blue-500 rounded-lg ring-offset-2 ring-offset-transparent' : ''}`}
         style={{
           transform: `translate(${position.x}px, ${position.y}px) scale(${image.scale}) rotate(${image.rotation}deg)`,
           opacity: image.opacity,
