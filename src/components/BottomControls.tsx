@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal, Trash2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { useTheme } from "next-themes";
+import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal, Trash2, Moon, Sun, MonitorDot, Aperture } from "lucide-react";
 
 import { UploadedImage } from "@/app/page";
 
@@ -13,7 +14,10 @@ interface BottomControlsProps {
   setFacingMode: (val: "environment" | "user") => void;
   flashlightOn: boolean;
   setFlashlightOn: (val: boolean) => void;
+  isWarpMode: boolean;
+  setIsWarpMode: (val: boolean) => void;
   onImageUpload: (files: FileList) => void;
+  onSnapshot: () => void;
 }
 
 type ActivePanel = "opacity" | "scale" | "rotate" | "more" | null;
@@ -26,10 +30,18 @@ export default function BottomControls({
   setFacingMode,
   flashlightOn,
   setFlashlightOn,
-  onImageUpload
+  isWarpMode,
+  setIsWarpMode,
+  onImageUpload,
+  onSnapshot,
 }: BottomControlsProps) {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { theme, setTheme } = useTheme();
+
+  // To avoid hydration mismatch for theme toggle icon, only render after mount
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const togglePanel = (panel: ActivePanel) => {
     setActivePanel(prev => prev === panel ? null : panel);
@@ -44,9 +56,9 @@ export default function BottomControls({
   };
 
   return (
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4 w-[90%] max-w-sm">
+    <div className="bottom-controls-bar absolute bottom-8 z-50 w-full max-w-md px-6 flex flex-col gap-4 mx-auto transition-opacity duration-300">
 
-      {/* Dynamic Floating Panel for Sliders */}
+      {/* Dynamic Expanding Panels / Sliders */}
       {activePanel && (
         <div className="w-full bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 text-white animate-in slide-in-from-bottom-2 fade-in duration-200 transition-all">
 
@@ -136,13 +148,39 @@ export default function BottomControls({
               />
 
               <ControlButton
+                icon={<MonitorDot size={22} />}
+                label="Warp"
+                isActive={isWarpMode}
+                onClick={() => {
+                  if (activeImage) setIsWarpMode(!isWarpMode);
+                }}
+              />
+
+              <ControlButton
                 icon={<Flashlight size={22} />}
                 label="Flash"
                 isActive={flashlightOn}
                 onClick={() => setFlashlightOn(!flashlightOn)}
               />
 
-              <div className="w-[1px] h-12 bg-white/20 mx-2"></div>
+              <ControlButton
+                icon={mounted && theme === "light" ? <Moon size={22} /> : <Sun size={22} />}
+                label="Theme"
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              />
+
+              <div className="w-[1px] h-12 bg-black/10 dark:bg-white/20 mx-1"></div>
+
+              <ControlButton
+                icon={<Aperture size={22} />}
+                label="Snapshot"
+                onClick={() => {
+                  onSnapshot();
+                  togglePanel("more");
+                }}
+              />
+
+              <div className="w-[1px] h-12 bg-black/10 dark:bg-white/20 mx-1"></div>
 
               <ControlButton
                 icon={<Trash2 size={22} className={activeImage ? "text-red-500" : ""} />}
