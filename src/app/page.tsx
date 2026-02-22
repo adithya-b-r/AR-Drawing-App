@@ -154,10 +154,44 @@ export default function Home() {
       if (controls) (controls as HTMLElement).style.opacity = '0';
       if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '0';
 
+      // Capture video frame to a temporary canvas to bypass html-to-image video limitations
+      const video = mainRef.current.querySelector('video');
+      let tempCanvas: HTMLCanvasElement | null = null;
+      if (video) {
+        tempCanvas = document.createElement('canvas');
+        tempCanvas.width = video.videoWidth;
+        tempCanvas.height = video.videoHeight;
+        const ctx = tempCanvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+        }
+        tempCanvas.style.position = 'absolute';
+        tempCanvas.style.inset = '0';
+        tempCanvas.style.width = '100%';
+        tempCanvas.style.height = '100%';
+        tempCanvas.style.objectFit = 'cover';
+        tempCanvas.style.zIndex = '0';
+        if (video.className.includes('scale-x-[-1]')) {
+          tempCanvas.style.transform = 'scaleX(-1)';
+        }
+
+        video.style.opacity = '0'; // hide video visually but keep layout
+        video.parentElement?.insertBefore(tempCanvas, video);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 100)); // wait for DOM to update
+
       const dataUrl = await toPng(mainRef.current, {
         cacheBust: true,
         backgroundColor: '#000000',
+        pixelRatio: 1, // Prevent massive scaling on high-res displays
+        skipFonts: true, // Prevent font embedding errors
       });
+
+      if (tempCanvas) {
+        tempCanvas.remove();
+        if (video) video.style.opacity = '1';
+      }
 
       if (controls) (controls as HTMLElement).style.opacity = '1';
       if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '1';
@@ -168,6 +202,16 @@ export default function Home() {
       link.click();
     } catch (e) {
       console.error("Snapshot failed", e);
+      // Clean up in case of error
+      const video = mainRef.current.querySelector('video');
+      if (video) video.style.opacity = '1';
+      const tempCanvas = mainRef.current.querySelector('canvas');
+      if (tempCanvas) tempCanvas.remove();
+
+      const controls = mainRef.current.querySelector('.bottom-controls-bar');
+      const splashOverlay = mainRef.current.querySelector('.splash-overlay');
+      if (controls) (controls as HTMLElement).style.opacity = '1';
+      if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '1';
     }
   };
 

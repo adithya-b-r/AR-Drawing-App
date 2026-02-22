@@ -19,12 +19,26 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
   // Helper to extract the cropped region as a base64 Data URL
   const getCroppedImg = (image: HTMLImageElement, crop: Crop): string => {
     const canvas = document.createElement("canvas");
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    let scaleX = image.naturalWidth / image.width;
+    let scaleY = image.naturalHeight / image.height;
 
     // Set actual output size to match original image resolution for the cropped area
-    canvas.width = crop.width * scaleX;
-    canvas.height = crop.height * scaleY;
+    let outW = crop.width * scaleX;
+    let outH = crop.height * scaleY;
+
+    // Clamp to 1500px maximum to prevent massive base64 strings crashing html-to-image
+    const MAX_DIM = 1500;
+    if (outW > MAX_DIM || outH > MAX_DIM) {
+      const resizeScale = Math.min(MAX_DIM / outW, MAX_DIM / outH);
+      outW *= resizeScale;
+      outH *= resizeScale;
+      // Note: scaleX and scaleY here are for the *destination* canvas,
+      // not for the source image selection. The source selection uses
+      // the original image.naturalWidth/image.width ratio.
+    }
+
+    canvas.width = outW;
+    canvas.height = outH;
 
     const ctx = canvas.getContext("2d");
 
@@ -32,10 +46,10 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
 
     ctx.drawImage(
       image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
+      crop.x * (image.naturalWidth / image.width),
+      crop.y * (image.naturalHeight / image.height),
+      crop.width * (image.naturalWidth / image.width),
+      crop.height * (image.naturalHeight / image.height),
       0,
       0,
       canvas.width,
@@ -57,11 +71,19 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
   const handleSkip = () => {
     if (imgRef.current) {
       const canvas = document.createElement("canvas");
-      canvas.width = imgRef.current.naturalWidth;
-      canvas.height = imgRef.current.naturalHeight;
+      let outW = imgRef.current.naturalWidth;
+      let outH = imgRef.current.naturalHeight;
+      const MAX_DIM = 1500;
+      if (outW > MAX_DIM || outH > MAX_DIM) {
+        const resizeScale = Math.min(MAX_DIM / outW, MAX_DIM / outH);
+        outW *= resizeScale;
+        outH *= resizeScale;
+      }
+      canvas.width = outW;
+      canvas.height = outH;
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        ctx.drawImage(imgRef.current, 0, 0);
+        ctx.drawImage(imgRef.current, 0, 0, outW, outH);
         onCropComplete(canvas.toDataURL("image/png"));
         return;
       }
