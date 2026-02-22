@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight } from "lucide-react";
+import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette } from "lucide-react";
 
 import { UploadedImage } from "@/app/page";
 
@@ -15,7 +15,7 @@ interface BottomControlsProps {
   onImageUpload: (files: FileList) => void;
 }
 
-type ActivePanel = "opacity" | "scale" | null;
+type ActivePanel = "opacity" | "scale" | "rotate" | null;
 
 export default function BottomControls({
   activeImage,
@@ -89,54 +89,93 @@ export default function BottomControls({
               />
             </div>
           )}
+
+          {activePanel === "rotate" && (
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center text-sm font-medium">
+                <span>Rotation</span>
+                <span className="text-white/60">
+                  {activeImage ? `${activeImage.rotation}°` : "N/A"}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                step="1"
+                value={activeImage ? activeImage.rotation : 0}
+                disabled={!activeImage}
+                onChange={(e) => activeImage && onUpdateImage(activeImage.id, { rotation: parseInt(e.target.value) })}
+                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
+              />
+            </div>
+          )}
         </div>
       )}
 
-      {/* Main Control Pill */}
-      <div className="w-full bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl rounded-full p-2 flex justify-between items-center shadow-lg border border-white/20 dark:border-white/10 overflow-hidden">
+      {/* Main Control Pill - Make it horizontally scrollable on smallest screens if needed */}
+      <div className="w-full max-w-full overflow-x-auto no-scrollbar mask-edges">
+        <div className="flex gap-2 w-max mx-auto bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl rounded-full p-2 items-center shadow-lg border border-white/20 dark:border-white/10">
 
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-        />
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
 
-        <ControlButton
-          icon={<ImagePlus size={22} />}
-          label="Gallery"
-          onClick={() => fileInputRef.current?.click()}
-        />
+          <ControlButton
+            icon={<ImagePlus size={22} />}
+            label="Gallery"
+            onClick={() => fileInputRef.current?.click()}
+          />
 
-        <ControlButton
-          icon={<SlidersHorizontal size={22} />}
-          label="Opacity"
-          isActive={activePanel === "opacity"}
-          onClick={() => togglePanel("opacity")}
-        />
+          <ControlButton
+            icon={<SlidersHorizontal size={22} />}
+            label="Opacity"
+            isActive={activePanel === "opacity"}
+            onClick={() => togglePanel("opacity")}
+          />
 
-        <ControlButton
-          icon={<Maximize size={22} />}
-          label="Scaling"
-          isActive={activePanel === "scale"}
-          onClick={() => togglePanel("scale")}
-        />
+          <ControlButton
+            icon={<Maximize size={22} />}
+            label="Scaling"
+            isActive={activePanel === "scale"}
+            onClick={() => togglePanel("scale")}
+          />
 
-        <ControlButton
-          icon={<Camera size={22} />}
-          label="Toggle"
-          onClick={() => setFacingMode(facingMode === "environment" ? "user" : "environment")}
-        />
+          <ControlButton
+            icon={<RotateCw size={22} />}
+            label="Rotate"
+            isActive={activePanel === "rotate"}
+            onClick={() => togglePanel("rotate")}
+          />
 
-        <ControlButton
-          icon={<Flashlight size={22} />}
-          label="Flash"
-          isActive={flashlightOn}
-          onClick={() => setFlashlightOn(!flashlightOn)}
-        />
+          <ControlButton
+            icon={<Palette size={22} />}
+            label="B&W"
+            isActive={activeImage ? activeImage.grayscale : false}
+            onClick={() => activeImage && onUpdateImage(activeImage.id, { grayscale: !activeImage.grayscale })}
+          />
 
+          <div className="w-[1px] h-8 bg-black/10 dark:bg-white/10 mx-1"></div>
+
+          <ControlButton
+            icon={<Camera size={22} />}
+            label="Lens"
+            onClick={() => setFacingMode(facingMode === "environment" ? "user" : "environment")}
+          />
+
+          <ControlButton
+            icon={<Flashlight size={22} />}
+            label="Flash"
+            isActive={flashlightOn}
+            onClick={() => setFlashlightOn(!flashlightOn)}
+          />
+
+        </div>
       </div>
     </div>
   );

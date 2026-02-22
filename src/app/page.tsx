@@ -10,6 +10,8 @@ export interface UploadedImage {
   url: string;
   opacity: number;
   scale: number;
+  rotation: number;
+  grayscale: boolean;
 }
 
 export default function Home() {
@@ -57,6 +59,8 @@ export default function Home() {
             url: URL.createObjectURL(f),
             opacity: 0.5,
             scale: 1.0,
+            rotation: 0,
+            grayscale: false,
           }));
 
           setUploadedImages(prev => [...prev, ...newImages]);

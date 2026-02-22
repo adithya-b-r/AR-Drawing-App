@@ -45,7 +45,7 @@ export default function ImageOverlay({ image, isActive, onSelect }: ImageOverlay
       <div
         className={`relative pointer-events-auto touch-none ${isActive ? 'ring-2 ring-blue-500 rounded-lg ring-offset-2 ring-offset-transparent' : ''}`}
         style={{
-          transform: `translate(${position.x}px, ${position.y}px) scale(${image.scale})`,
+          transform: `translate(${position.x}px, ${position.y}px) scale(${image.scale}) rotate(${image.rotation}deg)`,
           opacity: image.opacity,
           transition: "opacity 0.2s ease-in-out, transform-origin 0.2s"
         }}
@@ -58,6 +58,10 @@ export default function ImageOverlay({ image, isActive, onSelect }: ImageOverlay
           src={image.url}
           alt="Overlay sketch"
           className="max-w-[80vw] max-h-[70vh] object-contain drop-shadow-2xl rounded-lg"
+          style={{
+            filter: image.grayscale ? 'grayscale(100%)' : 'none',
+            transition: 'filter 0.2s ease-in-out'
+          }}
           draggable="false"
         />
 
