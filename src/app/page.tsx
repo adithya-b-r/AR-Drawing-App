@@ -6,7 +6,7 @@ import CameraFeed from "@/components/CameraFeed";
 import ImageOverlay from "@/components/ImageOverlay";
 import BottomControls from "@/components/BottomControls";
 import ImageCropperModal from "@/components/ImageCropperModal";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 export interface UploadedImage {
   id: string;
@@ -125,6 +125,14 @@ export default function Home() {
     setPendingImagesToCrop(prev => prev.slice(1));
   };
 
+  const handleCancelCrop = () => {
+    if (currentCropUrl && currentCropUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(currentCropUrl);
+    }
+    setCurrentCropUrl(null);
+    setPendingImagesToCrop(prev => prev.slice(1));
+  };
+
   const handleSnapshot = async () => {
     if (!mainRef.current) return;
     try {
@@ -133,17 +141,14 @@ export default function Home() {
       if (controls) (controls as HTMLElement).style.opacity = '0';
       if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '0';
 
-      const canvas = await html2canvas(mainRef.current, {
-        useCORS: true,
-        allowTaint: true,
+      const dataUrl = await toPng(mainRef.current, {
+        cacheBust: true,
         backgroundColor: '#000000',
-        logging: false,
       });
 
       if (controls) (controls as HTMLElement).style.opacity = '1';
       if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '1';
 
-      const dataUrl = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.download = `ar-drawing-${Date.now()}.png`;
       link.href = dataUrl;
@@ -240,7 +245,7 @@ export default function Home() {
         <ImageCropperModal
           imageUrl={currentCropUrl}
           onCropComplete={handleCropComplete}
-          onCancel={() => handleCropComplete(currentCropUrl)} // Skip cropping
+          onCancel={handleCancelCrop} // Abort cropping and discard image
         />
       )}
     </main>

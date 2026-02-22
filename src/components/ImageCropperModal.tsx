@@ -46,7 +46,13 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
     if (completedCrop && imgRef.current && completedCrop.width > 0 && completedCrop.height > 0) {
       const croppedUrl = getCroppedImg(imgRef.current, completedCrop);
       onCropComplete(croppedUrl);
-    } else if (imgRef.current) {
+    } else {
+      handleSkip(); // Fallback to full size if apply clicked with no region
+    }
+  };
+
+  const handleSkip = () => {
+    if (imgRef.current) {
       const fullSizeUrl = getCroppedImg(imgRef.current, {
         unit: 'px',
         width: imgRef.current.naturalWidth,
@@ -97,10 +103,10 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
         {/* Footer */}
         <div className="flex justify-end gap-3 p-4 border-t border-white/10 bg-zinc-900 shrink-0">
           <button
-            onClick={onCancel}
+            onClick={handleSkip}
             className="px-5 py-2.5 rounded-xl font-medium text-white/80 hover:bg-white/10 transition-colors"
           >
-            Skip
+            Upload Full Size
           </button>
           <button
             onClick={handleConfirm}
