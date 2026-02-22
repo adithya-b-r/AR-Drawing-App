@@ -6,7 +6,6 @@ import CameraFeed from "@/components/CameraFeed";
 import ImageOverlay from "@/components/ImageOverlay";
 import BottomControls from "@/components/BottomControls";
 import ImageCropperModal from "@/components/ImageCropperModal";
-import { toPng } from "html-to-image";
 
 export interface UploadedImage {
   id: string;
@@ -33,7 +32,6 @@ export default function Home() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   const [isWarpMode, setIsWarpMode] = useState(false);
-  const mainRef = useRef<HTMLElement>(null);
 
   // Cropper State
   const [pendingImagesToCrop, setPendingImagesToCrop] = useState<File[]>([]);
@@ -146,75 +144,6 @@ export default function Home() {
     setPendingImagesToCrop(prev => prev.slice(1));
   };
 
-  const handleSnapshot = async () => {
-    if (!mainRef.current) return;
-    try {
-      const controls = mainRef.current.querySelector('.bottom-controls-bar');
-      const splashOverlay = mainRef.current.querySelector('.splash-overlay');
-      if (controls) (controls as HTMLElement).style.opacity = '0';
-      if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '0';
-
-      // Capture video frame to a temporary canvas to bypass html-to-image video limitations
-      const video = mainRef.current.querySelector('video');
-      let tempCanvas: HTMLCanvasElement | null = null;
-      if (video) {
-        tempCanvas = document.createElement('canvas');
-        tempCanvas.width = video.videoWidth;
-        tempCanvas.height = video.videoHeight;
-        const ctx = tempCanvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-        }
-        tempCanvas.style.position = 'absolute';
-        tempCanvas.style.inset = '0';
-        tempCanvas.style.width = '100%';
-        tempCanvas.style.height = '100%';
-        tempCanvas.style.objectFit = 'cover';
-        tempCanvas.style.zIndex = '0';
-        if (video.className.includes('scale-x-[-1]')) {
-          tempCanvas.style.transform = 'scaleX(-1)';
-        }
-
-        video.style.opacity = '0'; // hide video visually but keep layout
-        video.parentElement?.insertBefore(tempCanvas, video);
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 100)); // wait for DOM to update
-
-      const dataUrl = await toPng(mainRef.current, {
-        cacheBust: true,
-        backgroundColor: '#000000',
-        pixelRatio: 1, // Prevent massive scaling on high-res displays
-        skipFonts: true, // Prevent font embedding errors
-      });
-
-      if (tempCanvas) {
-        tempCanvas.remove();
-        if (video) video.style.opacity = '1';
-      }
-
-      if (controls) (controls as HTMLElement).style.opacity = '1';
-      if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '1';
-
-      const link = document.createElement("a");
-      link.download = `ar-drawing-${Date.now()}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (e) {
-      console.error("Snapshot failed", e);
-      // Clean up in case of error
-      const video = mainRef.current.querySelector('video');
-      if (video) video.style.opacity = '1';
-      const tempCanvas = mainRef.current.querySelector('canvas');
-      if (tempCanvas) tempCanvas.remove();
-
-      const controls = mainRef.current.querySelector('.bottom-controls-bar');
-      const splashOverlay = mainRef.current.querySelector('.splash-overlay');
-      if (controls) (controls as HTMLElement).style.opacity = '1';
-      if (splashOverlay) (splashOverlay as HTMLElement).style.opacity = '1';
-    }
-  };
-
   if (showSplash) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 font-sans transition-colors duration-300">
@@ -228,7 +157,6 @@ export default function Home() {
 
   return (
     <main
-      ref={mainRef}
       className="relative flex min-h-screen flex-col items-center justify-center bg-zinc-100 dark:bg-black overflow-hidden transition-colors duration-300"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -294,7 +222,6 @@ export default function Home() {
         isWarpMode={isWarpMode}
         setIsWarpMode={setIsWarpMode}
         onImageUpload={(files: FileList) => handleFiles(Array.from(files))}
-        onSnapshot={handleSnapshot}
       />
 
       {/* Cropper Modal */}

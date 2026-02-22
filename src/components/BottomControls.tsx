@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal, Trash2, Moon, Sun, MonitorDot, Aperture } from "lucide-react";
+import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal, Trash2, Moon, Sun, MonitorDot } from "lucide-react";
 
 import { UploadedImage } from "@/app/page";
 
@@ -17,7 +17,6 @@ interface BottomControlsProps {
   isWarpMode: boolean;
   setIsWarpMode: (val: boolean) => void;
   onImageUpload: (files: FileList) => void;
-  onSnapshot: () => void;
 }
 
 type ActivePanel = "opacity" | "scale" | "rotate" | "more" | null;
@@ -33,7 +32,6 @@ export default function BottomControls({
   isWarpMode,
   setIsWarpMode,
   onImageUpload,
-  onSnapshot,
 }: BottomControlsProps) {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -125,7 +123,7 @@ export default function BottomControls({
             </div>
           )}
           {activePanel === "more" && (
-            <div className="flex gap-4 justify-center py-2">
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-6 py-2">
               <ControlButton
                 icon={<RotateCw size={22} />}
                 label="Rotate"
@@ -138,8 +136,6 @@ export default function BottomControls({
                 isActive={activeImage ? activeImage.grayscale : false}
                 onClick={() => activeImage && onUpdateImage(activeImage.id, { grayscale: !activeImage.grayscale })}
               />
-
-              <div className="w-[1px] h-12 bg-white/20 mx-2"></div>
 
               <ControlButton
                 icon={<Camera size={22} />}
@@ -168,19 +164,6 @@ export default function BottomControls({
                 label="Theme"
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
               />
-
-              <div className="w-[1px] h-12 bg-black/10 dark:bg-white/20 mx-1"></div>
-
-              <ControlButton
-                icon={<Aperture size={22} />}
-                label="Snapshot"
-                onClick={() => {
-                  onSnapshot();
-                  togglePanel("more");
-                }}
-              />
-
-              <div className="w-[1px] h-12 bg-black/10 dark:bg-white/20 mx-1"></div>
 
               <ControlButton
                 icon={<Trash2 size={22} className={activeImage ? "text-red-500" : ""} />}
