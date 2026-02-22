@@ -1,10 +1,10 @@
 # AR Drawing App 🎨
 
-![AR Drawing App Hero Image](/assets/hero_mockup.png)
+![AR Drawing App Hero Image](public/assets/hero_mockup.png)
 
 A sleek, mobile-first web application that overlays your digital sketches onto a live camera feed using Augmented Reality principles. Tracing and practicing your drawing skills has never been easier!
 
-![AR Drawing App Interface Demo](/assets/demo_mockup.png)
+![AR Drawing App Interface Demo](public/assets/demo_mockup.png)
 
 ## ✨ Key Features
 - **Live AR Tracking**: Stream your device's camera as a real-time underlay.
@@ -45,7 +45,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to launch 
 
 ---
 <div align="center">
-  <img src="/assets/about_modal.png" alt="Developer About Modal" width="400"/>
+  <img src="public/assets/about_modal.png" alt="Developer About Modal" width="400"/>
   <br/>
   <i>Created by Adithya B.R. - Don't forget to ⭐️ this repo!</i>
 </div>
