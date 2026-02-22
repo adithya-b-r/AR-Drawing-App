@@ -3,11 +3,11 @@
 import { useState, useRef } from "react";
 import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight } from "lucide-react";
 
+import { UploadedImage } from "@/app/page";
+
 interface BottomControlsProps {
-  opacity: number;
-  setOpacity: (val: number) => void;
-  scale: number;
-  setScale: (val: number) => void;
+  activeImage: UploadedImage | null;
+  onUpdateImage: (id: string, updates: Partial<UploadedImage>) => void;
   facingMode: "environment" | "user";
   setFacingMode: (val: "environment" | "user") => void;
   flashlightOn: boolean;
@@ -18,10 +18,8 @@ interface BottomControlsProps {
 type ActivePanel = "opacity" | "scale" | null;
 
 export default function BottomControls({
-  opacity,
-  setOpacity,
-  scale,
-  setScale,
+  activeImage,
+  onUpdateImage,
   facingMode,
   setFacingMode,
   flashlightOn,
@@ -54,16 +52,19 @@ export default function BottomControls({
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center text-sm font-medium">
                 <span>Opacity</span>
-                <span className="text-white/60">{Math.round(opacity * 100)}%</span>
+                <span className="text-white/60">
+                  {activeImage ? `${Math.round(activeImage.opacity * 100)}%` : "N/A"}
+                </span>
               </div>
               <input
                 type="range"
                 min="0.1"
                 max="1"
                 step="0.05"
-                value={opacity}
-                onChange={(e) => setOpacity(parseFloat(e.target.value))}
-                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
+                value={activeImage ? activeImage.opacity : 0.5}
+                disabled={!activeImage}
+                onChange={(e) => activeImage && onUpdateImage(activeImage.id, { opacity: parseFloat(e.target.value) })}
+                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
               />
             </div>
           )}
@@ -72,16 +73,19 @@ export default function BottomControls({
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center text-sm font-medium">
                 <span>Scale</span>
-                <span className="text-white/60">{scale.toFixed(1)}x</span>
+                <span className="text-white/60">
+                  {activeImage ? `${activeImage.scale.toFixed(1)}x` : "N/A"}
+                </span>
               </div>
               <input
                 type="range"
                 min="0.5"
                 max="3"
                 step="0.1"
-                value={scale}
-                onChange={(e) => setScale(parseFloat(e.target.value))}
-                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer"
+                value={activeImage ? activeImage.scale : 1.0}
+                disabled={!activeImage}
+                onChange={(e) => activeImage && onUpdateImage(activeImage.id, { scale: parseFloat(e.target.value) })}
+                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
               />
             </div>
           )}

@@ -2,19 +2,22 @@
 
 import { useState, useRef } from "react";
 
+import { UploadedImage } from "@/app/page";
+
 interface ImageOverlayProps {
-  imageUrl: string;
-  opacity: number;
-  scale: number;
+  image: UploadedImage;
+  isActive: boolean;
+  onSelect: () => void;
 }
 
-export default function ImageOverlay({ imageUrl, opacity, scale }: ImageOverlayProps) {
+export default function ImageOverlay({ image, isActive, onSelect }: ImageOverlayProps) {
   // Allow the user to drag the image around to align it with their paper
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const isDragging = useRef(false);
   const startPos = useRef({ x: 0, y: 0 });
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    onSelect();
     isDragging.current = true;
     startPos.current = {
       x: e.clientX - position.x,
@@ -40,10 +43,10 @@ export default function ImageOverlay({ imageUrl, opacity, scale }: ImageOverlayP
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden pointer-events-none">
       <div
-        className="relative pointer-events-auto touch-none"
+        className={`relative pointer-events-auto touch-none ${isActive ? 'ring-2 ring-blue-500 rounded-lg ring-offset-2 ring-offset-transparent' : ''}`}
         style={{
-          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-          opacity: opacity,
+          transform: `translate(${position.x}px, ${position.y}px) scale(${image.scale})`,
+          opacity: image.opacity,
           transition: "opacity 0.2s ease-in-out, transform-origin 0.2s"
         }}
         onPointerDown={handlePointerDown}
@@ -52,7 +55,7 @@ export default function ImageOverlay({ imageUrl, opacity, scale }: ImageOverlayP
         onPointerCancel={handlePointerUp}
       >
         <img
-          src={imageUrl}
+          src={image.url}
           alt="Overlay sketch"
           className="max-w-[80vw] max-h-[70vh] object-contain drop-shadow-2xl rounded-lg"
           draggable="false"

@@ -5,10 +5,16 @@ import CameraFeed from "@/components/CameraFeed";
 import ImageOverlay from "@/components/ImageOverlay";
 import BottomControls from "@/components/BottomControls";
 
+export interface UploadedImage {
+  id: string;
+  url: string;
+  opacity: number;
+  scale: number;
+}
+
 export default function Home() {
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [opacity, setOpacity] = useState(0.5);
-  const [scale, setScale] = useState(1.0);
+  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [activeImageId, setActiveImageId] = useState<string | null>(null);
   const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
   const [flashlightOn, setFlashlightOn] = useState(false);
 
@@ -18,8 +24,13 @@ export default function Home() {
       <CameraFeed facingMode={facingMode} flashlightOn={flashlightOn} />
 
       {/* Overlay Images */}
-      {uploadedImages.map((url, i) => (
-        <ImageOverlay key={url + i} imageUrl={url} opacity={opacity} scale={scale} />
+      {uploadedImages.map((img) => (
+        <ImageOverlay
+          key={img.id}
+          image={img}
+          isActive={activeImageId === img.id}
+          onSelect={() => setActiveImageId(img.id)}
+        />
       ))}
 
       {/* Intro/Upload overlay when no images */}
@@ -32,17 +43,27 @@ export default function Home() {
 
       {/* Bottom Controls */}
       <BottomControls
-        opacity={opacity}
-        setOpacity={setOpacity}
-        scale={scale}
-        setScale={setScale}
+        activeImage={uploadedImages.find(img => img.id === activeImageId) || null}
+        onUpdateImage={(id: string, updates: Partial<UploadedImage>) => {
+          setUploadedImages(prev => prev.map(img => img.id === id ? { ...img, ...updates } : img));
+        }}
         facingMode={facingMode}
         setFacingMode={setFacingMode}
         flashlightOn={flashlightOn}
         setFlashlightOn={setFlashlightOn}
         onImageUpload={(files: FileList) => {
-          const newUrls = Array.from(files).map(f => URL.createObjectURL(f));
-          setUploadedImages(prev => [...prev, ...newUrls]);
+          const newImages: UploadedImage[] = Array.from(files).map((f) => ({
+            id: Math.random().toString(36).substring(2, 9),
+            url: URL.createObjectURL(f),
+            opacity: 0.5,
+            scale: 1.0,
+          }));
+
+          setUploadedImages(prev => [...prev, ...newImages]);
+
+          if (newImages.length > 0) {
+            setActiveImageId(newImages[newImages.length - 1].id);
+          }
         }}
       />
     </main>
