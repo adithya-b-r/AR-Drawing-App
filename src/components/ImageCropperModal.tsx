@@ -92,19 +92,19 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-zinc-900 border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/80 backdrop-blur-sm p-4">
+      <div className="bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 shadow-2xl">
 
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b border-white/10">
-          <h2 className="text-white font-semibold text-lg">Crop Sketch</h2>
-          <button onClick={onCancel} className="text-white/60 hover:text-white transition-colors">
+        <div className="flex justify-between items-center p-4 border-b border-black/10 dark:border-white/10">
+          <h2 className="text-black dark:text-white font-semibold text-lg">Crop Sketch</h2>
+          <button onClick={onCancel} className="text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors">
             <X size={24} />
           </button>
         </div>
 
         {/* Cropper Area */}
-        <div className="flex-1 overflow-auto flex items-center justify-center p-4 bg-black">
+        <div className="flex-1 overflow-auto flex items-center justify-center p-4 bg-zinc-100 dark:bg-black">
           <ReactCrop
             crop={crop}
             onChange={(c) => setCrop(c)}
@@ -126,10 +126,10 @@ export default function ImageCropperModal({ imageUrl, onCropComplete, onCancel }
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-3 p-4 border-t border-white/10 bg-zinc-900 shrink-0">
+        <div className="flex justify-end gap-3 p-4 border-t border-black/10 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900 shrink-0">
           <button
             onClick={handleSkip}
-            className="px-5 py-2.5 rounded-xl font-medium text-white/80 hover:bg-white/10 transition-colors"
+            className="px-5 py-2.5 rounded-xl font-medium text-black/80 dark:text-white/80 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
           >
             Upload Full Size
           </button>

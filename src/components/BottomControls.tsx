@@ -58,13 +58,13 @@ export default function BottomControls({
 
       {/* Dynamic Expanding Panels / Sliders */}
       {activePanel && (
-        <div className="w-full bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 text-white animate-in slide-in-from-bottom-2 fade-in duration-200 transition-all">
+        <div className="w-full bg-white/90 dark:bg-[#1C1C1E]/90 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-3xl p-6 text-black dark:text-white animate-in slide-in-from-bottom-2 fade-in duration-200 transition-all shadow-xl">
 
           {activePanel === "opacity" && (
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center text-sm font-medium">
                 <span>Opacity</span>
-                <span className="text-white/60">
+                <span className="text-black/60 dark:text-white/60">
                   {activeImage ? `${Math.round(activeImage.opacity * 100)}%` : "N/A"}
                 </span>
               </div>
@@ -76,7 +76,7 @@ export default function BottomControls({
                 value={activeImage ? activeImage.opacity : 0.5}
                 disabled={!activeImage}
                 onChange={(e) => activeImage && onUpdateImage(activeImage.id, { opacity: parseFloat(e.target.value) })}
-                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
+                className="w-full accent-black dark:accent-white h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
               />
             </div>
           )}
@@ -85,7 +85,7 @@ export default function BottomControls({
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center text-sm font-medium">
                 <span>Scale</span>
-                <span className="text-white/60">
+                <span className="text-black/60 dark:text-white/60">
                   {activeImage ? `${activeImage.scale.toFixed(1)}x` : "N/A"}
                 </span>
               </div>
@@ -97,7 +97,7 @@ export default function BottomControls({
                 value={activeImage ? activeImage.scale : 1.0}
                 disabled={!activeImage}
                 onChange={(e) => activeImage && onUpdateImage(activeImage.id, { scale: parseFloat(e.target.value) })}
-                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
+                className="w-full accent-black dark:accent-white h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
               />
             </div>
           )}
@@ -106,7 +106,7 @@ export default function BottomControls({
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center text-sm font-medium">
                 <span>Rotation</span>
-                <span className="text-white/60">
+                <span className="text-black/60 dark:text-white/60">
                   {activeImage ? `${activeImage.rotation}°` : "N/A"}
                 </span>
               </div>
@@ -118,7 +118,7 @@ export default function BottomControls({
                 value={activeImage ? activeImage.rotation : 0}
                 disabled={!activeImage}
                 onChange={(e) => activeImage && onUpdateImage(activeImage.id, { rotation: parseInt(e.target.value) })}
-                className="w-full accent-white h-2 bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
+                className="w-full accent-black dark:accent-white h-2 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
               />
             </div>
           )}
