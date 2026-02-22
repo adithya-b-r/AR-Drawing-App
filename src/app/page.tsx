@@ -6,6 +6,7 @@ import CameraFeed from "@/components/CameraFeed";
 import ImageOverlay from "@/components/ImageOverlay";
 import BottomControls from "@/components/BottomControls";
 import ImageCropperModal from "@/components/ImageCropperModal";
+import AboutModal from "@/components/AboutModal";
 
 export interface UploadedImage {
   id: string;
@@ -32,6 +33,7 @@ export default function Home() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   const [isWarpMode, setIsWarpMode] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   // Cropper State
   const [pendingImagesToCrop, setPendingImagesToCrop] = useState<File[]>([]);
@@ -222,6 +224,7 @@ export default function Home() {
         isWarpMode={isWarpMode}
         setIsWarpMode={setIsWarpMode}
         onImageUpload={(files: FileList) => handleFiles(Array.from(files))}
+        onAboutClick={() => setShowAboutModal(true)}
       />
 
       {/* Cropper Modal */}
@@ -231,6 +234,11 @@ export default function Home() {
           onCropComplete={handleCropComplete}
           onCancel={handleCancelCrop} // Abort cropping and discard image
         />
+      )}
+
+      {/* About Modal */}
+      {showAboutModal && (
+        <AboutModal onClose={() => setShowAboutModal(false)} />
       )}
     </main>
   );

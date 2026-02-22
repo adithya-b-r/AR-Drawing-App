@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal, Trash2, Moon, Sun, MonitorDot } from "lucide-react";
+import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal, Trash2, Moon, Sun, MonitorDot, Info } from "lucide-react";
 
 import { UploadedImage } from "@/app/page";
 
@@ -17,6 +17,7 @@ interface BottomControlsProps {
   isWarpMode: boolean;
   setIsWarpMode: (val: boolean) => void;
   onImageUpload: (files: FileList) => void;
+  onAboutClick: () => void;
 }
 
 type ActivePanel = "opacity" | "scale" | "rotate" | "more" | null;
@@ -32,6 +33,7 @@ export default function BottomControls({
   isWarpMode,
   setIsWarpMode,
   onImageUpload,
+  onAboutClick,
 }: BottomControlsProps) {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -163,6 +165,15 @@ export default function BottomControls({
                 icon={mounted && theme === "light" ? <Moon size={22} /> : <Sun size={22} />}
                 label="Theme"
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              />
+
+              <ControlButton
+                icon={<Info size={22} />}
+                label="About"
+                onClick={() => {
+                  onAboutClick();
+                  togglePanel("more");
+                }}
               />
 
               <ControlButton
