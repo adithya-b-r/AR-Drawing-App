@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AR Drawing App 🎨
+
+A sleek, mobile-first web application that overlays your digital sketches onto a live camera feed using Augmented Reality principles. Tracing and practicing your drawing skills has never been easier!
+
+## Features
+- **Live Camera Underlay**: Uses the device's camera to display the real world.
+- **Image Overlays**: Upload multiple sketches and drag them into perfect position.
+- **Individual Controls**: Select an image to independently adjust its scaling, rotation, and opacity.
+- **Grayscale Filter**: Instantly convert noisy image backgrounds to B&W for easier tracing.
+- **Flashlight & Camera Toggles**: Easily switch between front and rear cameras, and toggle the device torch (if supported).
+- **Drag & Drop**: Seamlessly import images on desktop or tablet.
+
+## Tech Stack
+Built with modern web technologies for a premium experience:
+- **Framework**: Next.js 15 (React 19)
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide React
+- **API**: `navigator.mediaDevices` for web camera access
+
+## Future Enhancements 🚀
+If you want to take this app further, here are some great ideas to implement next:
+1. **Pinch-to-Zoom & Rotate**: Add native touch gesture recognition so users can scale and rotate images by pinching and twisting with two fingers on their touchscreen.
+2. **Local Storage Save State**: Automatically save the canvas state (uploaded images, their positions, and active settings) to `localStorage` so users don't lose their work if they accidentally refresh the page.
+3. **Perspective Distortion Grid**: Allow users to warp the corners of an overlay image independently to match perspective distortions when a piece of paper isn't perfectly flat or head-on.
+4. **Export Merged Canvas**: Add a "Snapshot" feature that captures the current camera frame and burns the overlays into a single downloadable image.
+5. **Image Cropping Sub-tool**: Allow users to crop out extraneous margins of their uploaded sketches natively in the app before tracing.
+6. **Dark/Light Theme Toggle**: Currently defaulting to a sleek dark UI, building a specific high-contrast light theme could help in bright environments.
 
 ## Getting Started
+First, clone the repo and install dependencies:
+```bash
+npm install
+```
 
-First, run the development server:
-
+Then run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

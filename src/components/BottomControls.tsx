@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal } from "lucide-react";
+import { SlidersHorizontal, Maximize, Camera, ImagePlus, Flashlight, RotateCw, Palette, MoreHorizontal, Trash2 } from "lucide-react";
 
 import { UploadedImage } from "@/app/page";
 
 interface BottomControlsProps {
   activeImage: UploadedImage | null;
   onUpdateImage: (id: string, updates: Partial<UploadedImage>) => void;
+  onDeleteImage: (id: string) => void;
   facingMode: "environment" | "user";
   setFacingMode: (val: "environment" | "user") => void;
   flashlightOn: boolean;
@@ -20,6 +21,7 @@ type ActivePanel = "opacity" | "scale" | "rotate" | "more" | null;
 export default function BottomControls({
   activeImage,
   onUpdateImage,
+  onDeleteImage,
   facingMode,
   setFacingMode,
   flashlightOn,
@@ -138,6 +140,19 @@ export default function BottomControls({
                 label="Flash"
                 isActive={flashlightOn}
                 onClick={() => setFlashlightOn(!flashlightOn)}
+              />
+
+              <div className="w-[1px] h-12 bg-white/20 mx-2"></div>
+
+              <ControlButton
+                icon={<Trash2 size={22} className={activeImage ? "text-red-500" : ""} />}
+                label="Delete"
+                onClick={() => {
+                  if (activeImage) {
+                    onDeleteImage(activeImage.id);
+                    togglePanel("more"); // Close the panel after deleting
+                  }
+                }}
               />
             </div>
           )}

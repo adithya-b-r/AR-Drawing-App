@@ -129,6 +129,15 @@ export default function Home() {
         onUpdateImage={(id: string, updates: Partial<UploadedImage>) => {
           setUploadedImages(prev => prev.map(img => img.id === id ? { ...img, ...updates } : img));
         }}
+        onDeleteImage={(id: string) => {
+          setUploadedImages(prev => {
+            const next = prev.filter(img => img.id !== id);
+            if (activeImageId === id) {
+              setActiveImageId(next.length > 0 ? next[next.length - 1].id : null);
+            }
+            return next;
+          });
+        }}
         facingMode={facingMode}
         setFacingMode={setFacingMode}
         flashlightOn={flashlightOn}
