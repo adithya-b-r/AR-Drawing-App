@@ -27,19 +27,7 @@ Built with modern web technologies for a premium experience:
 - **Icons**: Lucide React
 - **API**: `navigator.mediaDevices` for web camera access
 
-## 🚀 Getting Started
 
-First, clone the repo and install dependencies:
-```bash
-npm install
-```
-
-Then run the development server:
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to launch the AR studio!
 
 <br />
 
